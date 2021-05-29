@@ -15,7 +15,7 @@ class AnimeBloc extends Bloc<AnimeEvent, AnimeState> {
         final animePageResponse = await _animeRepo.getAnime(0);
         yield AnimeLoadSuccessState(
             animeLists: animePageResponse.animeLists,
-            canLoadNextPage: animePageResponse.canLoadNextPage);
+            animePages: animePageResponse.animePages);
       } catch (e) {
         yield AnimeLoadFailedState(error: e.toString());
         print(e.toString());

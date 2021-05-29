@@ -1,52 +1,121 @@
 class AnimeList {
-  final int id;
-  final String title;
-  final String synopsis;
-  final String rating;
-  final String episodes;
-  final String urlBanner;
-  final String urlCover;
-
-  AnimeList(
-      {required this.id,
-      required this.title,
-      required this.synopsis,
-      required this.rating,
-      required this.episodes,
-      required this.urlBanner,
-      required this.urlCover});
+  final String id;
+  final List<AnimeDetail> details;
+  AnimeList({required this.id, required this.details});
 
   factory AnimeList.fromJSON(Map<String, dynamic> json) {
     final id = json["id"];
-    final title = json["attributes"]["titles"]["canonicalTitle"] as String;
-    final synopsis = json["attributes"]["synopsis"] as String;
-    final rating = json["attributes"]["averageRating"] as String;
-    final episodes = json["attributes"]["episodeCount"] as String;
-    final urlBanner = json["attributes"]["coverImage"]["tiny"] as String;
-    final urlCover = json["attributes"]["posterImage"]["tiny"] as String;
-
+    final details = (json["attributes"] as List)
+        .map((e) => AnimeDetail.fromJSON(e))
+        .toList();
     return AnimeList(
-        id: id,
+      id: id,
+      details: details,
+    );
+  }
+}
+
+class AnimeDetail {
+  final String title;
+  final String rating;
+  final List<AnimePoster> urlPoster;
+  final List<AnimeCover> urlCover;
+  final String episode;
+  final String synopsis;
+
+  AnimeDetail(
+      {required this.title,
+      required this.rating,
+      required this.urlPoster,
+      required this.urlCover,
+      required this.episode,
+      required this.synopsis});
+
+  factory AnimeDetail.fromJSON(Map<String, dynamic> json) {
+    final String title = json["cannonicalTitle"];
+    final String rating = json["averageRating"];
+    final urlPoster = (json["posterImage"] as List)
+        .map((e) => AnimePoster.fromJSON(e))
+        .toList();
+    final urlCover = (json["coverImage"] as List)
+        .map((e) => AnimeCover.fromJSON(e))
+        .toList();
+    final String episode = json["episodeCount"];
+    final String synopsis = json["synopsis"];
+
+    return AnimeDetail(
         title: title,
-        synopsis: synopsis,
         rating: rating,
-        episodes: episodes,
-        urlBanner: urlBanner,
-        urlCover: urlCover);
+        urlPoster: urlPoster,
+        urlCover: urlCover,
+        episode: episode,
+        synopsis: synopsis);
+  }
+}
+
+class AnimePoster {
+  final String small;
+  final String large;
+
+  AnimePoster({required this.small, required this.large});
+
+  factory AnimePoster.fromJSON(Map<String, dynamic> json) {
+    final String small = json["small"];
+    final String large = json["large"];
+
+    return AnimePoster(small: small, large: large);
+  }
+}
+
+class AnimeCover {
+  final String small;
+  final String large;
+
+  AnimeCover({required this.small, required this.large});
+
+  factory AnimeCover.fromJSON(Map<String, dynamic> json) {
+    final String small = json["small"];
+    final String large = json["large"];
+
+    return AnimeCover(small: small, large: large);
+  }
+}
+
+class AnimePage {
+  final String next;
+  final String previous;
+  final String last;
+  final String first;
+
+  AnimePage({
+    required this.next,
+    required this.previous,
+    required this.last,
+    required this.first,
+  });
+
+  factory AnimePage.fromJSON(Map<String, dynamic> json) {
+    final String next = json["next"];
+    final String previous = json["previous"];
+    final String last = json["last"];
+    final String first = json["first"];
+
+    return AnimePage(next: next, previous: previous, last: last, first: first);
   }
 }
 
 class AnimeResponse {
   final List<AnimeList> animeLists;
-  final bool canLoadNextPage;
+  final List<AnimePage> animePages;
 
-  AnimeResponse({required this.animeLists, required this.canLoadNextPage});
+  AnimeResponse({required this.animeLists, required this.animePages});
 
   factory AnimeResponse.fromJSON(Map<String, dynamic> json) {
-    final canLoadNextPage = json["links"]["next"] == null ? false : true;
+    final animePages =
+        (json["links"] as List).map((e) => AnimePage.fromJSON(e)).toList();
+
     final animeLists =
         (json["data"] as List).map((e) => AnimeList.fromJSON(e)).toList();
-    return AnimeResponse(
-        animeLists: animeLists, canLoadNextPage: canLoadNextPage);
+    return AnimeResponse(animeLists: animeLists, animePages: animePages);
   }
 }

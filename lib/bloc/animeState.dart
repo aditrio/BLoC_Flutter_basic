@@ -7,11 +7,10 @@ class AnimeInitialState extends AnimeState {}
 class AnimeLoadInProgressState extends AnimeState {}
 
 class AnimeLoadSuccessState extends AnimeState {
-  final List<AnimeList> animeLists;
-  final bool canLoadNextPage;
+  final List<dynamic> animeLists;
+  final List<dynamic> animePages;
 
-  AnimeLoadSuccessState(
-      {required this.animeLists, required this.canLoadNextPage});
+  AnimeLoadSuccessState({required this.animeLists, required this.animePages});
 }
 
 class AnimeLoadFailedState extends AnimeState {

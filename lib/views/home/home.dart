@@ -24,8 +24,8 @@ class _HomePageState extends State<HomePage> {
                   child: GridTile(
                     child: Column(
                       children: [
-                        Image.network(state.animeLists[index].urlCover),
-                        Text(state.animeLists[index].title)
+                        // Image.network(state.animeLists[index].details.),
+                        Text(state.animeLists[index].toString())
                       ],
                     ),
                   ),

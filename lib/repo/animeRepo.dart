@@ -21,8 +21,6 @@ class AnimeRepository {
 
     final json = jsonDecode(response.body);
 
-    print("data : " + json.toString());
-
     return AnimeResponse.fromJSON(json);
   }
 }
